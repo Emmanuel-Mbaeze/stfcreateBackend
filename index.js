@@ -12,7 +12,7 @@ app.use("/api/user", require("./router/Router"));
 app.use("/api/book", require("./router/bookingrouter"));
 app.use("/api/content", require("./router/contentrouter"));
 
-app.get("/", (req, res) => {
+app.get("/rent", (req, res) => {
   res.status(200).json({ message: "stfcreates" });
 });
 
