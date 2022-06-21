@@ -10,6 +10,7 @@ const userSChema = Schema(
     },
     email: {
       type: String,
+      unique: true,
     },
     password: {
       type: String,
@@ -28,6 +29,9 @@ const userSChema = Schema(
     },
 
     verifiedtoken: {
+      type: String,
+    },
+    OTP: {
       type: String,
     },
     content: [

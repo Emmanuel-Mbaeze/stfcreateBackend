@@ -8,6 +8,12 @@ const contentSchema = new Schema(
     message: {
       type: String,
     },
+    image: {
+      type: String,
+    },
+    imageID: {
+      type: String,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",

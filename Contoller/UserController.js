@@ -4,63 +4,103 @@ const jwt = require("jsonwebtoken");
 const cloudinary = require("../Connect/CLoudinary");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const verifiedEmail = require("../Connect/sendMail");
 
 // const transport = nodemailer.createTransport({
 //   service: "hotmail",
 //   auth: {
-//     user: "nelsonelaye@hotmail.com",
-//     pass: "boking.100",
+//     user: "mbaezesomto@hotmail.com",
+//     pass: "enugustate@22",
 //   },
 // });
 
-// const transport = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: "Gideonekeke64@gmail.com",
-//     pass: "sgczftichnkcqksx",
-//   },
-// });
+const transport = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "Gideonekeke64@gmail.com",
+    pass: "sgczftichnkcqksx",
+  },
+});
 
-const signupUser = async (req, res) => {
+const signupAdmin = async (req, res) => {
   try {
     const { username, fullname, email, password } = req.body;
     const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(password, salt);
-    // const image = await cloudinary.uploader.upload(req.file.path);
+    const image = await cloudinary.uploader.upload(req.file.path);
 
     const datatoken = await crypto.randomBytes(34).toString("hex");
     const token = await jwt.sign({ datatoken }, "TheSecret", {
       expiresIn: "1d",
     });
 
+    const Adminotp = await crypto.randomBytes(4).toString("hex");
+    const mainOtp = await jwt.sign({ Adminotp }, "AdminSecret", {
+      expiresIn: "1d",
+    });
+    const Admin = await userModel.create({
+      username,
+      fullname,
+      password: hashed,
+      email,
+      avatar: image.secure_url,
+      avatarID: image.public_id,
+      verifiedtoken: token,
+      OTP: mainOtp,
+    });
+
+    const mailOptions = {
+      from: "mbaezesomto@hotmail.com",
+      to: email,
+      subject: "Account Verification",
+      html: `
+     <h4>Thanks For Signing Up With sfcreate.Click <a
+     href="http://localhost:9091/api/user/verify/${user._id}/${token}"
+     >Link </a> to Verify Account. and this is your OtP <h1>"${mainOtp}"<h1/>keep secured and don't share</h4>
+     `,
+    };
+
+    transport.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        console.log("message not sent");
+      } else {
+        console.log("message sent", info.response);
+      }
+    });
+
+    res.status(201).json({
+      status: "check mail",
+      message: Admin,
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "signup failed",
+      message: error.message,
+    });
+  }
+};
+const signupUser = async (req, res) => {
+  try {
+    const { username, fullname, email, password } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(password, salt);
+    const image = await cloudinary.uploader.upload(req.file.path);
+
     const user = await userModel.create({
       username,
       fullname,
       password: hashed,
       email,
-      // avatar: image.secure_url,
-      // avatarID: image.public_id,
+      avatar: image.secure_url,
+      avatarID: image.public_id,
       verifiedtoken: token,
     });
 
-    // const mailOptions = {
-    //   from: "no-replt@gmail.com",
-    //   to: email,
-    //   subject: "Account Verification",
-    //   html: `
-    //  <h4>Click <a
-    //  href="http://localhost:9090/api/user/verify/${user._id}/${token}"
-    //  >Link </a> to Verify Account</h4>
-    //  `,
-    // };
-
-    // transport.sendMail(mailOptions, (err, ...info) => {
-    //   if (err) {
-    //     console.log(err.message);
-    //   } else {
-    //     console.log("message sent", info.response);
-    //   }
-    // });
+    verifiedEmail(email, user._id)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => console.log(err));
 
     res.status(201).json({
       status: "check mail",

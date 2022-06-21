@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 const url = process.env.URL;
+const url1 = process.env.URLONLINE;
 mongoose
-  .connect(url)
+  .connect(url1)
   .then(() => {
     console.log("Connected to database");
   })

@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const { image } = require("../Connect/Multer");
+
 const {
   createcontent,
   allcontent,
@@ -8,9 +10,9 @@ const {
   deleteallcontent,
 } = require("../Contoller/contentcontroller");
 
-router.route("/create/:id").post(createcontent);
+router.route("/create/:id").post(image, createcontent);
 router.route("/:id").get(singleallcontent);
-router.route("/").get(allcontent);
+router.route("/all").get(allcontent);
 router.route("/:id/:content").get(oneContent).delete(deleteallcontent);
 
 module.exports = router;

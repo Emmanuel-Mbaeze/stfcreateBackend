@@ -1,14 +1,18 @@
 const userModel = require("../Schema/UserSchema");
 const contentModel = require("../Schema/contentSchema");
 const mongoose = require("mongoose");
+const cloudinary = require("../Connect/CLoudinary");
 
 const createcontent = async (req, res) => {
   try {
     const { message, title } = req.body;
+    const image = await cloudinary.uploader.upload(req.file.path);
     const getUser = await userModel.findById(req.params.id);
     const contentcreate = new contentModel({
       title,
       message,
+      image: image.secure_url,
+      imageID: image.public_id,
     });
     contentcreate.user = getUser;
     contentcreate.save();
