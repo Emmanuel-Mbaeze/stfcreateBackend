@@ -93,7 +93,7 @@ const signupUser = async (req, res) => {
       email,
       avatar: image.secure_url,
       avatarID: image.public_id,
-      verifiedtoken: token,
+      // verifiedtoken: token,
     });
 
     verifiedEmail(email, user._id)

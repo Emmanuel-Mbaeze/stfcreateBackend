@@ -5,13 +5,12 @@ require("dotenv").config();
 require("./Connect/Connect");
 const port = process.env.PORT || 9091;
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/user", require("./router/Router"));
-app.use("/api/book", require("./router/bookingrouter"));
-app.use("/api/content", require("./router/contentrouter"));
+app.use("/api/user", require("./Router/Router"));
+app.use("/api/book", require("./Router/bookingrouter"));
+app.use("/api/content", require("./Router/contentrouter"));
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "stfcreates" });
