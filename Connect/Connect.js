@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 // const url1 = process.env.URL;
 // const url = process.env.URLONLINE;
 const url =
-  "mongodb+srv://Emmanuel:123456789Somto@cluster0.firhs.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://Emmanuel:123456789Somto@cluster0.firhs.mongodb.net/stfcreates?retryWrites=true&w=majority";
 
 mongoose
   .connect(url)
